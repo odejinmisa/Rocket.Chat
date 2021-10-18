@@ -1375,6 +1375,101 @@ describe('[Users]', function() {
 		reservedWords.forEach((name) => {
 			failUpdateUserOwnBasicInfo(name);
 		});
+
+		it('should throw an error if not allowed to change real name', async () => {
+			await updateSetting('Accounts_AllowRealNameChange', false);
+
+			await request.post(api('users.updateOwnBasicInfo'))
+				.set(credentials)
+				.send({
+					data: {
+						name: 'edited name',
+					},
+				})
+				.expect('Content-Type', 'application/json')
+				.expect(400)
+				.expect((res) => {
+					expect(res.body).to.have.property('success', false);
+				});
+
+			await updateSetting('Accounts_AllowRealNameChange', true);
+		});
+
+		it('should throw an error if not allowed to change username', async () => {
+			await updateSetting('Accounts_AllowUsernameChange', false);
+
+			await request.post(api('users.updateOwnBasicInfo'))
+				.set(credentials)
+				.send({
+					data: {
+						username: 'edited.user.name',
+					},
+				})
+				.expect('Content-Type', 'application/json')
+				.expect(400)
+				.expect((res) => {
+					expect(res.body).to.have.property('success', false);
+				});
+
+			await updateSetting('Accounts_AllowUsernameChange', true);
+		});
+
+		it('should throw an error if not allowed to change statusText', async () => {
+			await updateSetting('Accounts_AllowUserStatusMessageChange', false);
+
+			await request.post(api('users.updateOwnBasicInfo'))
+				.set(credentials)
+				.send({
+					data: {
+						statusText: 'My custom status',
+					},
+				})
+				.expect('Content-Type', 'application/json')
+				.expect(400)
+				.expect((res) => {
+					expect(res.body).to.have.property('success', false);
+				});
+
+			await updateSetting('Accounts_AllowUserStatusMessageChange', true);
+		});
+
+		it('should throw an error if not allowed to change email', async () => {
+			await updateSetting('Accounts_AllowEmailChange', false);
+
+			await request.post(api('users.updateOwnBasicInfo'))
+				.set(credentials)
+				.send({
+					data: {
+						email: 'changed@email.com',
+					},
+				})
+				.expect('Content-Type', 'application/json')
+				.expect(400)
+				.expect((res) => {
+					expect(res.body).to.have.property('success', false);
+				});
+
+			await updateSetting('Accounts_AllowEmailChange', true);
+		});
+
+		it('should throw an error if not allowed to change password', async () => {
+			await updateSetting('Accounts_AllowPasswordChange', false);
+
+			await request.post(api('users.updateOwnBasicInfo'))
+				.set(credentials)
+				.send({
+					data: {
+						newPassword: 'MyNewPassw0rd',
+					},
+				})
+				.expect('Content-Type', 'application/json')
+				.expect(400)
+				.expect((res) => {
+					expect(res.body).to.have.property('success', false);
+				});
+
+			await updateSetting('Accounts_AllowPasswordChange', true);
+		});
 	});
 
 	describe('[/users.setPreferences]', () => {
@@ -2999,7 +3094,7 @@ describe('[Users]', function() {
 		});
 	});
 
-	describe('[/users.listTeams', () => {
+	describe('[/users.listTeams]', () => {
 		const teamName1 = `team-name-${ Date.now() }`;
 		const teamName2 = `team-name-2-${ Date.now() }`;
 		let testUser;
@@ -3089,7 +3184,7 @@ describe('[Users]', function() {
 		it('should list both channels', (done) => {
 			request.get(api('users.listTeams'))
 				.set(credentials)
-				.send({
+				.query({
 					userId: testUser._id,
 				})
 				.expect('Content-Type', 'application/json')
