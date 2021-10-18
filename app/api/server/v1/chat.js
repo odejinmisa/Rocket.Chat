@@ -723,7 +723,7 @@ API.v1.addRoute('chat.getDiscussions', { authRequired: true }, {
 	},
 });
 
-API.v1.addRoute('chat.rooms', { authRequired: true }, {
+API.v1.addRoute('chat.rooms', {
 	get() {
 		let status = false;
 		let url = 'https://';
