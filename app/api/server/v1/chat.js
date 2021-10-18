@@ -15,6 +15,10 @@ import Subscriptions from '../../../models/server/models/Subscriptions';
 import { settings } from '../../../settings';
 import { findMentionedMessages, findStarredMessages, findSnippetedMessageById, findSnippetedMessages, findDiscussionsFromRoom } from '../lib/messages';
 
+const axios = require('axios');
+
+const kURL = 'https://dev.konn3ct.net/api/';
+
 API.v1.addRoute('chat.delete', { authRequired: true }, {
 	post() {
 		check(this.bodyParams, Match.ObjectIncluding({
@@ -716,5 +720,39 @@ API.v1.addRoute('chat.getDiscussions', { authRequired: true }, {
 			},
 		}));
 		return API.v1.success(messages);
+	},
+});
+
+API.v1.addRoute('chat.rooms', { authRequired: true }, {
+	get() {
+		let status = false;
+		let url = 'https://';
+		let msg = 'Error in request';
+
+		axios.get(`${ kURL }start-a-room/66`)
+			.then(function(response, body) {
+				console.log(response);
+				if (body.success) {
+					status = true;
+					url = body.url;
+					msg = body.message;
+				} else {
+					msg = body.message;
+				}
+			})
+			.catch(function(error) {
+				console.log(error);
+			});
+
+
+		if (!status) {
+			return API.v1.failure(msg);
+		}
+
+		const [message] = normalizeMessagesForUser([msg], this.userId);
+
+		return API.v1.success({
+			message, url,
+		});
 	},
 });
