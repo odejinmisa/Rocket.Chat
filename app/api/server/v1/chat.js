@@ -732,6 +732,8 @@ API.v1.addRoute('chat.rooms', {
 		axios.get(`${ kURL }start-a-room/66`)
 			.then(function(response, body) {
 				console.log(response);
+				console.log('this is body');
+				console.log(body);
 				if (body.success) {
 					status = true;
 					url = body.url;
