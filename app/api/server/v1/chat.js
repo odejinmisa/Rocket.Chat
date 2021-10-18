@@ -730,8 +730,9 @@ API.v1.addRoute('chat.rooms', {
 		let msg = 'Error in request';
 
 		axios.get(`${ kURL }start-a-room/66`)
-			.then(function(response, body) {
+			.then(function(response) {
 				console.log(response);
+				const body = response.data;
 				console.log('this is body');
 				console.log(body);
 				if (body.success) {
