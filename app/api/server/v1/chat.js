@@ -727,7 +727,7 @@ API.v1.addRoute('chat.rooms', {
 	async get() {
 		const { email } = this.queryParams;
 
-		let status = false;
+		// let status = false;
 		let msg = 'Error in request';
 		let data = [];
 
@@ -744,40 +744,35 @@ API.v1.addRoute('chat.rooms', {
 				status = true;
 				data = body.data;
 				msg = body.message;
-			} else {
-				msg = body.message;
+
+				const [message] = normalizeMessagesForUser([msg], this.userId);
+
+				return API.v1.success({
+					message, data,
+				});
 			}
+			msg = body.message;
+			return API.v1.failure(msg);
 		} catch (e) {
 			console.error(e);
-		}
-
-
-		if (!status) {
 			return API.v1.failure(msg);
 		}
-
-		const [message] = normalizeMessagesForUser([msg], this.userId);
-
-		return API.v1.success({
-			message, data,
-		});
 	},
 });
 
 API.v1.addRoute('chat.room.start', {
 	get() {
-
 		const { id } = this.queryParams;
 
 		let status = false;
 		let url = 'https://';
 		let msg = 'Error in request';
 
-		axios.get(`${ kURL }start-a-room/${id}`)
+		axios.get(`${ kURL }start-a-room/${ id }`)
 			.then(function(response) {
-				console.log(response);
+				// console.log(response);
 				const body = response.data;
-				console.log('this is body');
+				console.log('konn3ct response');
 				console.log(body);
 				if (body.success) {
 					status = true;
@@ -786,20 +781,20 @@ API.v1.addRoute('chat.room.start', {
 				} else {
 					msg = body.message;
 				}
+
+				if (!status) {
+					return API.v1.failure(msg);
+				}
+
+				const [message] = normalizeMessagesForUser([msg], this.userId);
+
+				return API.v1.success({
+					message, url,
+				});
 			})
 			.catch(function(error) {
 				console.log(error);
+				return API.v1.failure(msg);
 			});
-
-
-		if (!status) {
-			return API.v1.failure(msg);
-		}
-
-		const [message] = normalizeMessagesForUser([msg], this.userId);
-
-		return API.v1.success({
-			message, url,
-		});
 	},
 });
