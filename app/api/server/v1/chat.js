@@ -745,11 +745,13 @@ API.v1.addRoute('chat.rooms', {
 				data = body.data;
 				msg = body.message;
 
-				const [message] = normalizeMessagesForUser([msg], this.userId);
+				return body;
 
-				return API.v1.success({
-					message, data,
-				});
+				// const [message] = normalizeMessagesForUser([msg], this.userId);
+
+				// return API.v1.success({
+				// 	message, data,
+				// });
 			}
 			msg = body.message;
 			return API.v1.failure(msg);
@@ -786,11 +788,9 @@ API.v1.addRoute('chat.room.start', {
 					return API.v1.failure(msg);
 				}
 
-				const [message] = normalizeMessagesForUser([msg], this.userId);
+				// const [message] = normalizeMessagesForUser([msg], this.userId);
 
-				return API.v1.success({
-					message, url,
-				});
+				return body;
 			})
 			.catch(function(error) {
 				console.log(error);
