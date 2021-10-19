@@ -734,7 +734,7 @@ API.v1.addRoute('chat.rooms', {
 
 		try {
 			const response = await axios.get(`${ kURL }rooms/${ email }`);
-			console.log(response);
+			// console.log(response);
 
 			const body = response.data;
 			console.log('konn3ct response');
@@ -780,17 +780,10 @@ API.v1.addRoute('chat.room.start', {
 					status = true;
 					url = body.url;
 					msg = body.message;
-				} else {
-					msg = body.message;
+					return body;
 				}
-
-				if (!status) {
-					return API.v1.failure(msg);
-				}
-
-				// const [message] = normalizeMessagesForUser([msg], this.userId);
-
-				return body;
+				msg = body.message;
+				return API.v1.failure(msg);
 			})
 			.catch(function(error) {
 				console.log(error);
