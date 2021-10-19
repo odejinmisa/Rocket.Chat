@@ -744,14 +744,8 @@ API.v1.addRoute('chat.rooms', {
 				status = true;
 				data = body.data;
 				msg = body.message;
+				return API.v1.success(body);
 
-				return body;
-
-				// const [message] = normalizeMessagesForUser([msg], this.userId);
-
-				// return API.v1.success({
-				// 	message, data,
-				// });
 			}
 			msg = body.message;
 			return API.v1.failure(msg);
@@ -780,7 +774,7 @@ API.v1.addRoute('chat.room.start', {
 					status = true;
 					url = body.url;
 					msg = body.message;
-					return body;
+					return API.v1.success(body);
 				}
 				msg = body.message;
 				return API.v1.failure(msg);
