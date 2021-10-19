@@ -724,12 +724,56 @@ API.v1.addRoute('chat.getDiscussions', { authRequired: true }, {
 });
 
 API.v1.addRoute('chat.rooms', {
+	async get() {
+		const { email } = this.queryParams;
+
+		let status = false;
+		let msg = 'Error in request';
+		let data = [];
+
+
+		try {
+			const response = await axios.get(`${ kURL }rooms/${ email }`);
+			console.log(response);
+
+			const body = response.data;
+			console.log('konn3ct response');
+			console.log(body);
+			if (body.success) {
+				console.log(`success: ${ body.success }`);
+				status = true;
+				data = body.data;
+				msg = body.message;
+			} else {
+				msg = body.message;
+			}
+		} catch (e) {
+			console.error(e);
+		}
+
+
+		if (!status) {
+			return API.v1.failure(msg);
+		}
+
+		const [message] = normalizeMessagesForUser([msg], this.userId);
+
+		return API.v1.success({
+			message, data,
+		});
+	},
+});
+
+API.v1.addRoute('chat.room.start', {
 	get() {
+
+		const { id } = this.queryParams;
+
 		let status = false;
 		let url = 'https://';
 		let msg = 'Error in request';
 
-		axios.get(`${ kURL }start-a-room/66`)
+		axios.get(`${ kURL }start-a-room/${id}`)
 			.then(function(response) {
 				console.log(response);
 				const body = response.data;

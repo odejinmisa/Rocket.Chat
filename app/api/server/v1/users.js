@@ -27,6 +27,10 @@ import { setUserStatus } from '../../../../imports/users-presence/server/activeU
 import { resetTOTP } from '../../../2fa/server/functions/resetTOTP';
 import { Team } from '../../../../server/sdk';
 
+const axios = require('axios');
+
+const kURL = 'https://dev.konn3ct.net/api/';
+
 API.v1.addRoute('users.create', { authRequired: true }, {
 	post() {
 		check(this.bodyParams, {
@@ -284,7 +288,7 @@ API.v1.addRoute('users.list', { authRequired: true }, {
 });
 
 API.v1.addRoute('users.register', { authRequired: false }, {
-	post() {
+	async post() {
 		if (this.userId) {
 			return API.v1.failure('Logged in users can not register again.');
 		}
@@ -305,6 +309,29 @@ API.v1.addRoute('users.register', { authRequired: false }, {
 		// Now set their username
 		Meteor.runAsUser(userId, () => Meteor.call('setUsername', this.bodyParams.username));
 		const { fields } = this.parseJsonQuery();
+
+		try {
+			const response = await axios.post(`${ kURL }register`, {
+				email: this.bodyParams.email,
+				name: this.bodyParams.name,
+				username: this.bodyParams.username,
+				password: this.bodyParams.pass,
+			});
+			console.log(response);
+
+			const body = response.data;
+			console.log('konn3ct register response');
+			console.log(body);
+			// if (body.success) {
+			// 	status = true;
+			// 	url = body.url;
+			// 	msg = body.message;
+			// } else {
+			// 	msg = body.message;
+			// }
+		} catch (e) {
+			console.error(e);
+		}
 
 		return API.v1.success({ user: Users.findOneById(userId, { fields }) });
 	},
