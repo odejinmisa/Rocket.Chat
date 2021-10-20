@@ -75,6 +75,10 @@ API.v1.addRoute('chat.konn3ct.room.start', {
 				console.log('konn3ct response');
 				console.log(body);
 
+				return API.v1.success({
+					group: { name: 'sammy', body },
+				});
+
 				if (body.success) {
 					status = true;
 					url = body.url;
