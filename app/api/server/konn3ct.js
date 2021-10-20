@@ -28,6 +28,15 @@ API.v1.addRoute('chat.konn3ct.rooms', {
 			const body = response.data;
 			console.log('konn3ct response');
 			console.log(body);
+
+			return {
+				statusCode: 200,
+				body: {
+					status: true,
+					message: 'created',
+					data: { name: 'samji' },
+				},
+			};
 			if (body.success) {
 				console.log(`success: ${ body.success }`);
 				status = true;
