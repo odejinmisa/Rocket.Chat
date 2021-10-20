@@ -69,7 +69,7 @@ API.v1.addRoute('chat.konn3ct.room.start', {
 			statusCode: 401,
 			body: {
 				status: 'error',
-				message: msg,
+				message: 'hi',
 			},
 		};
 
