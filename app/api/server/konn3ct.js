@@ -21,6 +21,15 @@ API.v1.addRoute('chat.konn3ct.rooms', {
 		let msg = 'Error in request';
 		let data = [];
 
+		return {
+			statusCode: 200,
+			body: {
+				status: true,
+				message: 'created',
+				data: { name: 'samji' },
+			},
+		};
+
 		try {
 			const response = await axios.get(`${ kURL }rooms/${ email }`);
 			// console.log(response);
@@ -29,14 +38,6 @@ API.v1.addRoute('chat.konn3ct.rooms', {
 			console.log('konn3ct response');
 			console.log(body);
 
-			return {
-				statusCode: 200,
-				body: {
-					status: true,
-					message: 'created',
-					data: { name: 'samji' },
-				},
-			};
 			if (body.success) {
 				console.log(`success: ${ body.success }`);
 				status = true;
@@ -47,7 +48,7 @@ API.v1.addRoute('chat.konn3ct.rooms', {
 					statusCode: 200,
 					body: {
 						success: true,
-						message: "hello",
+						message: 'hello',
 					},
 				};
 			}
@@ -63,6 +64,11 @@ API.v1.addRoute('chat.konn3ct.rooms', {
 API.v1.addRoute('chat.konn3ct.room.start', {
 	get() {
 		const { id } = this.queryParams;
+
+		return API.v1.success({
+			message: 'messge',
+			data: 'data',
+		});
 
 		// return {
 		// 	statusCode: 200,
@@ -94,7 +100,7 @@ API.v1.addRoute('chat.konn3ct.room.start', {
 
 					return API.v1.success({
 						message: msg,
-						data: url
+						data: url,
 					});
 
 
