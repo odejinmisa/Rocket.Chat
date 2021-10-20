@@ -17,6 +17,16 @@ API.v1.addRoute('chat.konn3ct.rooms', {
 	async get() {
 		const { email } = this.queryParams;
 
+		const response = {
+			status: 'success',
+			data: {
+				message: 'You\'ve been logged out!',
+			},
+		};
+
+		return response;
+
+
 		let msg = 'Error in request';
 		let data = [];
 
