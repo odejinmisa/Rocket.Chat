@@ -59,7 +59,7 @@ API.v1.addRoute('chat.konn3ct.room.start', {
 	get() {
 		const { id } = this.queryParams;
 
-		return API.v1.success("success message");
+		return API.v1.success('success message');
 
 		return {
 			statusCode: 200,
@@ -117,6 +117,10 @@ API.v1.addRoute('chat.konn3ct.room.start', {
 API.v1.addRoute('konn3ct.create.group', {
 	post() {
 		const { email } = this.bodyParams;
+
+		return API.v1.success({
+			group: { name: 'sammy' },
+		});
 
 		console.log(`email body ${ email }`);
 
