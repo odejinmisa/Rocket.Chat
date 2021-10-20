@@ -44,5 +44,6 @@ import './v1/instances';
 import './v1/banners';
 import './v1/email-inbox';
 import './v1/teams';
+import './konn3ct';
 
 export { API, APIClass, defaultRateLimiterOptions } from './api';
