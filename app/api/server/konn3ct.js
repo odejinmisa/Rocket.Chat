@@ -55,6 +55,14 @@ API.v1.addRoute('chat.konn3ct.room.start', {
 	get() {
 		const { id } = this.queryParams;
 
+		return {
+			statusCode: 401,
+			body: {
+				status: 'error',
+				message: msg,
+			},
+		};
+
 		let status = false;
 		let url = 'https://';
 		let msg = 'Error in request';
