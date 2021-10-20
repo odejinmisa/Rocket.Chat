@@ -18,9 +18,6 @@ API.v1.addRoute('chat.konn3ct.rooms', {
 	async get() {
 		const { email } = this.queryParams;
 
-		return API.v1.failure('this is error');
-
-
 		let msg = 'Error in request';
 		let data = [];
 
@@ -59,22 +56,15 @@ API.v1.addRoute('chat.konn3ct.room.start', {
 	get() {
 		const { id } = this.queryParams;
 
-		return API.v1.success({
-			message: 'created',
-			data: { name: 'samji' }
-		});
+		// return {
+		// 	statusCode: 200,
+		// 	body: {
+		// 		status: true,
+		// 		message: 'created',
+		// 		data: { name: 'samji' },
+		// 	},
+		// };
 
-
-		return {
-			statusCode: 200,
-			body: {
-				status: true,
-				message: 'created',
-				data: { name: 'samji' },
-			},
-		};
-
-		let status = false;
 		let url = 'https://';
 		let msg = 'Error in request';
 
@@ -84,26 +74,25 @@ API.v1.addRoute('chat.konn3ct.room.start', {
 				const body = response.data;
 				console.log('konn3ct response');
 				console.log(body);
-				return {
-					statusCode: 401,
-					body: {
-						status: 'error',
-						message: body,
-					},
-				};
 
 				if (body.success) {
 					status = true;
 					url = body.url;
 					msg = body.message;
 
-					return {
-						statusCode: 401,
-						body: {
-							status: 'error',
-							message: msg,
-						},
-					};
+					return API.v1.success({
+						message: msg,
+						data: url
+					});
+
+
+					// return {
+					// 	statusCode: 401,
+					// 	body: {
+					// 		status: 'error',
+					// 		message: msg,
+					// 	},
+					// };
 
 					// return API.v1.success({ body });
 				}
@@ -122,9 +111,9 @@ API.v1.addRoute('konn3ct.create.group', {
 	post() {
 		const { email } = this.bodyParams;
 
-		return API.v1.success({
-			group: { name: 'sammy' },
-		});
+		// return API.v1.success({
+		// 	group: { name: 'sammy' },
+		// });
 
 		console.log(`email body ${ email }`);
 
