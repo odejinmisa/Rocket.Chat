@@ -6,6 +6,7 @@ import { API } from './api';
 import Rooms from '../../models/server/models/Rooms';
 
 import { getDefaultUserFields } from '/app/utils/server/functions/getDefaultUserFields';
+import { findPrivateGroupByIdOrName } from '/app/api/server/v1/groups';
 
 
 const axios = require('axios');
@@ -17,14 +18,7 @@ API.v1.addRoute('chat.konn3ct.rooms', {
 	async get() {
 		const { email } = this.queryParams;
 
-		const response = {
-			status: 'success',
-			data: {
-				message: 'You\'ve been logged out!',
-			},
-		};
-
-		return response;
+		return API.v1.failure('this is error');
 
 
 		let msg = 'Error in request';
@@ -64,6 +58,8 @@ API.v1.addRoute('chat.konn3ct.rooms', {
 API.v1.addRoute('chat.konn3ct.room.start', {
 	get() {
 		const { id } = this.queryParams;
+
+		return API.v1.success("success message");
 
 		return {
 			statusCode: 200,
@@ -173,5 +169,17 @@ API.v1.addRoute('konn3ct.create.group', {
 		return API.v1.success({
 			group: this.composeRoomWithLastMessage(Rooms.findOneById(id.rid, { fields: API.v1.defaultFieldsToExclude }), userId),
 		});
+	},
+});
+
+API.v1.addRoute('konn3ct.delete.group', { authRequired: true }, {
+	post() {
+		const findResult = findPrivateGroupByIdOrName({ params: this.requestParams(), userId: this.userId, checkedArchived: false });
+
+		Meteor.runAsUser(this.userId, () => {
+			Meteor.call('eraseRoom', findResult.rid);
+		});
+
+		return API.v1.success();
 	},
 });
