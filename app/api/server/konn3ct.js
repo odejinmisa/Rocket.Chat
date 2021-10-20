@@ -65,11 +65,6 @@ API.v1.addRoute('chat.konn3ct.room.start', {
 	get() {
 		const { id } = this.queryParams;
 
-		return API.v1.success({
-			message: 'messge',
-			data: id,
-		});
-
 		// return {
 		// 	statusCode: 200,
 		// 	body: {
@@ -88,6 +83,11 @@ API.v1.addRoute('chat.konn3ct.room.start', {
 				const body = response.data;
 				console.log('konn3ct response');
 				console.log(body);
+
+				return API.v1.success({
+					message: 'messge',
+					data: body,
+				});
 
 				return API.v1.success({
 					group: { name: 'sammy' },
