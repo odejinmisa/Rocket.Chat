@@ -38,8 +38,7 @@ API.v1.addRoute('chat.konn3ct.rooms', {
 					statusCode: 200,
 					body: {
 						success: true,
-						message: msg,
-						data,
+						message: "hello",
 					},
 				};
 			}
@@ -76,7 +75,7 @@ API.v1.addRoute('chat.konn3ct.room.start', {
 				console.log(body);
 
 				return API.v1.success({
-					group: { name: 'sammy', body },
+					group: { name: 'sammy' },
 				});
 
 				if (body.success) {
