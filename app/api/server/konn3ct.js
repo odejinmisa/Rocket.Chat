@@ -59,7 +59,11 @@ API.v1.addRoute('chat.konn3ct.room.start', {
 	get() {
 		const { id } = this.queryParams;
 
-		return API.v1.success('success message');
+		return API.v1.success({
+			message: 'created',
+			data: { name: 'samji' }
+		});
+
 
 		return {
 			statusCode: 200,
