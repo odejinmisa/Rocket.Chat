@@ -792,19 +792,19 @@ API.v1.addRoute('group.create', {
 	post() {
 		const { email } = this.bodyParams;
 
-		console.log("email body " + email);
+		console.log(`email body ${ email }`);
 
-		if(email == null){
+		if (email == null) {
 			return API.v1.failure('Email Required');
 		}
 
 		const user = Meteor.users.findOne({
-			email,
+			'emails.address': email,
 		}, {
 			fields: getDefaultUserFields(),
 		});
 
-		console.log("user find " + user);
+		console.log(`user find ${ user }`);
 
 		if (user == null) {
 			return API.v1.failure('User not found');
