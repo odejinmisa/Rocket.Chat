@@ -306,9 +306,6 @@ API.v1.addRoute('users.register', { authRequired: false }, {
 		// Register the user
 		const userId = Meteor.call('registerUser', this.bodyParams);
 
-		// Now set their username
-		Meteor.runAsUser(userId, () => Meteor.call('setUsername', this.bodyParams.username));
-		const { fields } = this.parseJsonQuery();
 
 		try {
 			const response = await axios.post(`${ kURL }register`, {
@@ -317,7 +314,7 @@ API.v1.addRoute('users.register', { authRequired: false }, {
 				username: this.bodyParams.username,
 				password: this.bodyParams.pass,
 			});
-			console.log(response);
+			// console.log(response);
 
 			const body = response.data;
 			console.log('konn3ct register response');
@@ -332,6 +329,10 @@ API.v1.addRoute('users.register', { authRequired: false }, {
 		} catch (e) {
 			console.error(e);
 		}
+
+		// Now set their username
+		Meteor.runAsUser(userId, () => Meteor.call('setUsername', this.bodyParams.username));
+		const { fields } = this.parseJsonQuery();
 
 		return API.v1.success({ user: Users.findOneById(userId, { fields }) });
 	},
