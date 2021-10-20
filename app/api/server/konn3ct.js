@@ -86,7 +86,7 @@ API.v1.addRoute('chat.konn3ct.room.start', {
 
 				return API.v1.success({
 					message: 'messge',
-					data: body,
+					data: body.message,
 				});
 
 				return API.v1.success({
