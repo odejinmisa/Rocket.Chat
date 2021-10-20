@@ -66,10 +66,11 @@ API.v1.addRoute('chat.konn3ct.room.start', {
 		const { id } = this.queryParams;
 
 		return {
-			statusCode: 401,
+			statusCode: 200,
 			body: {
-				status: 'error',
-				message: 'hi',
+				status: true,
+				message: 'created',
+				data: { name: 'samji' },
 			},
 		};
 
