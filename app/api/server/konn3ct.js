@@ -7,6 +7,8 @@ import Rooms from '../../models/server/models/Rooms';
 
 import { getDefaultUserFields } from '/app/utils/server/functions/getDefaultUserFields';
 import { findPrivateGroupByIdOrName } from '/app/api/server/v1/groups';
+import { executeSendMessage } from '/app/lib/server/methods/sendMessage';
+import { normalizeMessagesForUser } from '/app/utils/server/lib/normalizeMessagesForUser';
 
 
 const axios = require('axios');
@@ -187,14 +189,149 @@ API.v1.addRoute('konn3ct.create.group', {
 	},
 });
 
-API.v1.addRoute('konn3ct.delete.group', { authRequired: true }, {
+API.v1.addRoute('konn3ct.delete.group', {
 	post() {
-		const findResult = findPrivateGroupByIdOrName({ params: this.requestParams(), userId: this.userId, checkedArchived: false });
+		const { email, roomName } = this.bodyParams;
 
-		Meteor.runAsUser(this.userId, () => {
+		console.log(`email body ${ email }`);
+
+		if (email == null) {
+			return API.v1.failure('Email Required');
+		}
+
+		if (roomName == null) {
+			return API.v1.failure('roomName Required');
+		}
+
+		const user = Meteor.users.findOne({
+			'emails.address': email,
+		}, {
+			fields: getDefaultUserFields(),
+		});
+
+		console.log(`user find ${ user }`);
+
+		if (user == null) {
+			return API.v1.failure('User not found');
+		}
+
+		const userId = user._id;
+		const requestParams = { roomName };
+
+		const findResult = findPrivateGroupByIdOrName({ params: requestParams, userId, checkedArchived: false });
+
+		Meteor.runAsUser(userId, () => {
 			Meteor.call('eraseRoom', findResult.rid);
 		});
 
 		return API.v1.success();
+	},
+});
+
+API.v1.addRoute('konn3ct.invite.group', {
+	post() {
+		const { roomId = '', roomName = '' } = this.requestParams();
+		const idOrName = roomId || roomName;
+		if (!idOrName.trim()) {
+			throw new Meteor.Error('error-room-param-not-provided', 'The parameter "roomId" or "roomName" is required');
+		}
+
+		const { _id: rid, t: type } = Rooms.findOneByIdOrName(idOrName) || {};
+
+		if (!rid || type !== 'p') {
+			throw new Meteor.Error('error-room-not-found', 'The required "roomId" or "roomName" param provided does not match any group');
+		}
+
+		const { email, invitee } = this.bodyParams;
+
+		console.log(`email body ${ email }`);
+
+		if (email == null) {
+			return API.v1.failure('Email Required');
+		}
+
+		const user = Meteor.users.findOne({
+			'emails.address': email,
+		}, {
+			fields: getDefaultUserFields(),
+		});
+
+		console.log(`user find ${ user }`);
+
+		if (user == null) {
+			return API.v1.failure('User not found');
+		}
+
+		const userId = user._id;
+
+		// for invitee
+		console.log(`invitee email ${ invitee }`);
+
+		if (invitee == null) {
+			return API.v1.failure('invitee Email Required');
+		}
+
+		const userInvitee = Meteor.users.findOne({
+			'emails.address': invitee,
+		}, {
+			fields: getDefaultUserFields(),
+		});
+
+		console.log(`invitee find ${ userInvitee }`);
+
+		if (userInvitee == null) {
+			return API.v1.failure('userInvitee not found');
+		}
+
+		this.requestParams().userId = userInvitee.id;
+
+		const users = this.getUserListFromParams();
+
+		if (!users.length) {
+			throw new Meteor.Error('error-empty-invite-list', 'Cannot invite if no valid users are provided');
+		}
+
+		Meteor.runAsUser(userId, () => Meteor.call('addUsersToRoom', { rid, users: users.map((u) => u.username) }));
+
+		return API.v1.success({
+			group: this.composeRoomWithLastMessage(Rooms.findOneById(rid, { fields: API.v1.defaultFieldsToExclude }), this.userId),
+		});
+	},
+});
+
+API.v1.addRoute('konn3ct.sendMessage.group', {
+	post() {
+		if (!this.bodyParams.message) {
+			throw new Meteor.Error('error-invalid-params', 'The "message" parameter must be provided.');
+		}
+
+		const { email } = this.bodyParams;
+
+		console.log(`email body ${ email }`);
+
+		if (email == null) {
+			return API.v1.failure('Email Required');
+		}
+
+		const user = Meteor.users.findOne({
+			'emails.address': email,
+		}, {
+			fields: getDefaultUserFields(),
+		});
+
+		console.log(`user find ${ user }`);
+
+		if (user == null) {
+			return API.v1.failure('User not found');
+		}
+
+		const userId = user._id;
+
+		const sent = executeSendMessage(userId, this.bodyParams.message);
+		const [message] = normalizeMessagesForUser([sent], userId);
+
+		return API.v1.success({
+			message,
+		});
 	},
 });
