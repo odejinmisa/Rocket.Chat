@@ -286,7 +286,8 @@ API.v1.addRoute('konn3ct.invite.group', {
 			return API.v1.failure('userInvitee not found');
 		}
 
-		this.requestParams().userId = userInvitee.id;
+		this.bodyParams.userId = userInvitee.id;
+		this.bodyParams.username = userInvitee.username;
 
 		const users = this.getUserListFromParams();
 
