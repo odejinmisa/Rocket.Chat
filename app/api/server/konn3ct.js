@@ -243,7 +243,7 @@ API.v1.addRoute('konn3ct.invite.group', {
 			throw new Meteor.Error('error-room-not-found', 'The required "roomId" or "roomName" param provided does not match any group');
 		}
 
-		const { email, invitee } = this.bodyParams;
+		const { email, invitee, inviteeName } = this.bodyParams;
 
 		console.log(`email body ${ email }`);
 
@@ -283,7 +283,16 @@ API.v1.addRoute('konn3ct.invite.group', {
 		console.log(userInvitee);
 
 		if (userInvitee == null) {
-			return API.v1.failure('userInvitee not found');
+			const rand=Math.floor(Math.random() * 100000000) + 5;
+			const username=this.bodyParams.name.split(' ') + rand;
+			this.bodyParams.email=invitee;
+			this.bodyParams.name=inviteeName;
+			this.bodyParams.username=username;
+			this.bodyParams.pass="12345671";
+			// Register the user
+			const inviteeUserId = Meteor.call('registerUser', this.bodyParams);
+			// Now set their username
+			Meteor.runAsUser(inviteeUserId, () => Meteor.call('setUsername', this.bodyParams.username));
 		}
 
 		this.bodyParams.userId = userInvitee.id;
@@ -298,7 +307,7 @@ API.v1.addRoute('konn3ct.invite.group', {
 		Meteor.runAsUser(userId, () => Meteor.call('addUsersToRoom', { rid, users: users.map((u) => u.username) }));
 
 		return API.v1.success({
-			group: this.composeRoomWithLastMessage(Rooms.findOneById(rid, { fields: API.v1.defaultFieldsToExclude }), this.userId),
+			group: this.composeRoomWithLastMessage(Rooms.findOneById(rid, { fields: API.v1.defaultFieldsToExclude }), userId),
 		});
 	},
 });
