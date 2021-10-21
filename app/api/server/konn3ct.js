@@ -147,7 +147,8 @@ API.v1.addRoute('konn3ct.create.group', {
 			fields: getDefaultUserFields(),
 		});
 
-		console.log(`user find ${ user }`);
+		console.log('user find');
+		console.log(user);
 
 		if (user == null) {
 			return API.v1.failure('User not found');
@@ -256,7 +257,8 @@ API.v1.addRoute('konn3ct.invite.group', {
 			fields: getDefaultUserFields(),
 		});
 
-		console.log(`user find ${ user }`);
+		console.log('user find');
+		console.log(user);
 
 		if (user == null) {
 			return API.v1.failure('User not found');
@@ -277,7 +279,8 @@ API.v1.addRoute('konn3ct.invite.group', {
 			fields: getDefaultUserFields(),
 		});
 
-		console.log(`invitee find ${ userInvitee }`);
+		console.log('invitee find');
+		console.log(userInvitee);
 
 		if (userInvitee == null) {
 			return API.v1.failure('userInvitee not found');
