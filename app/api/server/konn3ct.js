@@ -284,7 +284,7 @@ API.v1.addRoute('konn3ct.invite.group', {
 
 		if (userInvitee == null) {
 			const rand=Math.floor(Math.random() * 100000000) + 5;
-			const username=this.bodyParams.name.split(' ') + rand;
+			const username=inviteeName.split(' ') + rand;
 			this.bodyParams.email=invitee;
 			this.bodyParams.name=inviteeName;
 			this.bodyParams.username=username;
