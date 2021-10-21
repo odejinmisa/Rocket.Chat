@@ -283,20 +283,20 @@ API.v1.addRoute('konn3ct.invite.group', {
 		console.log(userInvitee);
 
 		if (userInvitee == null) {
-			const rand=Math.floor(Math.random() * 100000000) + 5;
-			const username=inviteeName.split(' ')[0] + rand;
-			this.bodyParams.email=invitee;
-			this.bodyParams.name=inviteeName;
-			this.bodyParams.username=username;
-			this.bodyParams.pass="12345671";
+			const rand = Math.floor(Math.random() * 100000000) + 5;
+			const username = inviteeName.split(' ')[0] + rand;
+			this.bodyParams.email = invitee;
+			this.bodyParams.name = inviteeName;
+			this.bodyParams.username = username;
+			this.bodyParams.pass = '12345671';
 			// Register the user
 			const inviteeUserId = Meteor.call('registerUser', this.bodyParams);
 			// Now set their username
 			Meteor.runAsUser(inviteeUserId, () => Meteor.call('setUsername', this.bodyParams.username));
+			this.bodyParams.userId = inviteeUserId;
+		} else {
+			this.bodyParams.userId = userInvitee.id;
 		}
-
-		this.bodyParams.userId = userInvitee.id;
-		this.bodyParams.username = userInvitee.username;
 
 		const users = this.getUserListFromParams();
 
