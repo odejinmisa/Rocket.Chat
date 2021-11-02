@@ -131,11 +131,16 @@ API.v1.addRoute('konn3ct.create.group', {
 	post() {
 		const { email } = this.bodyParams;
 
+		console.log('========================================');
+		console.log('Create Group');
+		console.log('========================================');
+
+
 		// return API.v1.success({
 		// 	group: { name: 'sammy' },
 		// });
 
-		console.log(`email body ${ email }`);
+		console.log(`user-email= ${ email }`);
 
 		if (email == null) {
 			return API.v1.failure('Email Required');
@@ -148,7 +153,7 @@ API.v1.addRoute('konn3ct.create.group', {
 		});
 
 		console.log('user find');
-		console.log(user);
+		console.log(user._id);
 
 		if (user == null) {
 			return API.v1.failure('User not found');
@@ -231,6 +236,11 @@ API.v1.addRoute('konn3ct.delete.group', {
 
 API.v1.addRoute('konn3ct.invite.group', {
 	post() {
+		console.log('========================================');
+		console.log('Group Invite');
+		console.log('========================================');
+
+
 		const { roomId = '', roomName = '' } = this.requestParams();
 		const idOrName = roomId || roomName;
 		if (!idOrName.trim()) {
@@ -314,13 +324,17 @@ API.v1.addRoute('konn3ct.invite.group', {
 
 API.v1.addRoute('konn3ct.sendMessage.group', {
 	post() {
+		console.log('========================================');
+		console.log('Send message to Group');
+		console.log('========================================');
+
 		if (!this.bodyParams.message) {
 			throw new Meteor.Error('error-invalid-params', 'The "message" parameter must be provided.');
 		}
 
 		const { email } = this.bodyParams;
 
-		console.log(`email body ${ email }`);
+		console.log(`user-email=${ email }`);
 
 		if (email == null) {
 			return API.v1.failure('Email Required');
@@ -332,7 +346,7 @@ API.v1.addRoute('konn3ct.sendMessage.group', {
 			fields: getDefaultUserFields(),
 		});
 
-		console.log(`user find ${ user }`);
+		console.log(`user find ${ user._id }`);
 
 		if (user == null) {
 			return API.v1.failure('User not found');
