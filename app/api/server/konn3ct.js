@@ -349,6 +349,8 @@ API.v1.addRoute('konn3ct.sendMessage.group', {
 		console.log('type');
 		console.log(type);
 
+		this.bodyParams.message.rid = rid;
+
 		const sent = executeSendMessage(userId, this.bodyParams.message);
 		const [message] = normalizeMessagesForUser([sent], userId);
 
