@@ -340,8 +340,7 @@ API.v1.addRoute('konn3ct.sendMessage.group', {
 
 		const userId = user._id;
 
-		const { roomId = '', roomName = '' } = this.requestParams();
-		const idOrName = roomId || roomName;
+		const idOrName = this.bodyParams.message.rid;
 
 		const { _id: rid, t: type } = Rooms.findOneByIdOrName(idOrName) || {};
 
