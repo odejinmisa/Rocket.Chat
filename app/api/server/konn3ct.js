@@ -240,6 +240,9 @@ API.v1.addRoute('konn3ct.invite.group', {
 		console.log('Group Invite');
 		console.log('========================================');
 
+		console.log('Request');
+		console.log(this.bodyParams);
+
 
 		const { roomId = '', roomName = '' } = this.requestParams();
 		const idOrName = roomId || roomName;
@@ -267,8 +270,8 @@ API.v1.addRoute('konn3ct.invite.group', {
 			fields: getDefaultUserFields(),
 		});
 
-		console.log('user find');
-		console.log(user);
+		// console.log('user find');
+		// console.log(user);
 
 		if (user == null) {
 			return API.v1.failure('User not found');
@@ -289,8 +292,8 @@ API.v1.addRoute('konn3ct.invite.group', {
 			fields: getDefaultUserFields(),
 		});
 
-		console.log('invitee find');
-		console.log(userInvitee);
+		// console.log('invitee find');
+		// console.log(userInvitee);
 
 		if (userInvitee == null) {
 			const rand = Math.floor(Math.random() * 100000000) + 5;
