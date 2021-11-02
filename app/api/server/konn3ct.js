@@ -308,7 +308,7 @@ API.v1.addRoute('konn3ct.invite.group', {
 			Meteor.runAsUser(inviteeUserId, () => Meteor.call('setUsername', this.bodyParams.username));
 			this.bodyParams.userId = inviteeUserId;
 		} else {
-			this.bodyParams.userId = userInvitee.id;
+			this.bodyParams.userId = userInvitee._id;
 		}
 
 		const users = this.getUserListFromParams();
